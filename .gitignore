@@ -43,3 +43,5 @@ venv/
 
 #ss
 config.json
+
+.venv/

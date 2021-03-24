@@ -23,6 +23,20 @@ import os
 import logging
 import signal
 
+android_setprocnetwork = lambda x: -1
+
+try:
+    from cffi import FFI
+    cffi_imported = False
+    f = FFI()
+    f.cdef("int android_setprocnetwork(uint64_t);")
+    l = f.dlopen("android")
+    android_setprocnetwork = l.android_setprocnetwork
+    if os.environ.get("ANDROID_NETHANDLE"):
+        android_setprocnetwork(int(os.environ["ANDROID_NETHANDLE"]))
+except ImportError:
+    pass
+
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../'))
 from shadowsocks import shell, daemon, eventloop, tcprelay, udprelay, \
     asyncdns, manager
